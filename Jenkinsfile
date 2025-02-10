@@ -7,6 +7,7 @@ pipeline {
         PATH = "${PYTHON_HOME};${PYTHON_HOME}\\Scripts;${env.PATH}"
     }
 
+    stages {
         stage('Build') {
             steps {
                 script {
@@ -20,8 +21,10 @@ pipeline {
 
         stage('Test') {
             steps {
-                echo 'Running unit tests...'
-                bat 'cd jenkins-ci-cd-pipeline && "%PYTHON_HOME%\\python.exe" -m pytest > test-results.log'
+                script {
+                    echo 'Running unit tests...'
+                    bat 'cd jenkins-ci-cd-pipeline && "%PYTHON_HOME%\\python.exe" -m pytest > test-results.log'
+                }
             }
         }
 
