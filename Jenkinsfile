@@ -10,18 +10,18 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Cloning GitLab repository...'
-                bat '"%GIT_HOME%" clone https://github.com/harini1810/jenkins-ci-cd-pipeline'  // 🔹 Replace with actual GitLab repo URL
-                
+                echo 'Cloning GitHub repository...'
+                bat '"%GIT_HOME%" clone https://github.com/harini1810/jenkins-ci-cd-pipeline'
+
                 echo 'Installing dependencies...'
-                bat 'cd your-repo && "%PYTHON_HOME%\\python.exe" -m pip install -r requirements.txt'
+                bat 'cd jenkins-ci-cd-pipeline && "%PYTHON_HOME%\\python.exe" -m pip install -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running unit tests...'
-                bat 'cd your-repo && "%PYTHON_HOME%\\python.exe" -m pytest > test-results.log'
+                bat 'cd jenkins-ci-cd-pipeline && "%PYTHON_HOME%\\python.exe" -m pytest > test-results.log'
             }
         }
 
@@ -30,7 +30,7 @@ pipeline {
                 expression { return currentBuild.result == null || currentBuild.result == 'SUCCESS' }
             }
             steps {
-                echo 'Deployment Successful!' // 
+                echo 'Deployment Successful!' // Replace this with actual deployment logic
             }
         }
     }
