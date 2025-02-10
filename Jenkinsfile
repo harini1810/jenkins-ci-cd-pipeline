@@ -1,38 +1,49 @@
 pipeline {
     agent any
-    
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
                 script {
                     echo "Cloning repository..."
                     checkout scm
-                    sh 'pip install -r requirements.txt'
                 }
             }
         }
-        
+
+        stage('Build') {
+            steps {
+                script {
+                    bat 'echo Building the application...'
+                    bat 'python --version' // Example: Check Python version
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 script {
-                    echo "Running unit tests..."
-                    def testResult = sh(script: 'python -m unittest test_app.py', returnStatus: true)
-                    if (testResult != 0) {
-                        error "Tests failed!"
-                    }
+                    bat 'echo Running tests...'
+                    bat 'pytest' // Ensure pytest is installed
                 }
             }
         }
-        
+
         stage('Deploy') {
-            when {
-                expression { currentBuild.result == null || currentBuild.result == 'SUCCESS' }
-            }
             steps {
                 script {
-                    echo "Deployment Successful"
+                    bat 'echo Deploying the application...'
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+        failure {
+            echo 'Pipeline failed!'
         }
     }
 }
