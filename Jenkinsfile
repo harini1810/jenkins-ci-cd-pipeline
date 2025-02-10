@@ -7,14 +7,14 @@ pipeline {
         PATH = "${PYTHON_HOME};${PYTHON_HOME}\\Scripts;${env.PATH}"
     }
 
-    stages {
         stage('Build') {
             steps {
-                echo 'Cloning GitHub repository...'
-                bat '"%GIT_HOME%" clone https://github.com/harini1810/jenkins-ci-cd-pipeline'
-
-                echo 'Installing dependencies...'
-                bat 'cd jenkins-ci-cd-pipeline && "%PYTHON_HOME%\\python.exe" -m pip install -r requirements.txt'
+                script {
+                    echo 'Cleaning workspace...'
+                    bat 'rmdir /s /q jenkins-ci-cd-pipeline || echo "No directory to delete"'
+                    echo 'Cloning GitHub repository...'
+                    bat '"C:\\Windows\\Git\\cmd\\git.exe" clone https://github.com/harini1810/jenkins-ci-cd-pipeline'
+                }
             }
         }
 
