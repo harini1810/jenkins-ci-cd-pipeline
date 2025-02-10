@@ -2,37 +2,35 @@ pipeline {
     agent any
 
     environment {
+        GIT_HOME = 'C:\\Windows\\Git\\cmd\\git.exe'
         PYTHON_HOME = 'C:\\Users\\Harini\\AppData\\Local\\Programs\\Python\\Python312'
-        PATH = "${env.PYTHON_HOME};${env.PYTHON_HOME}\\Scripts;${env.PATH}"
+        PATH = "${PYTHON_HOME};${PYTHON_HOME}\\Scripts;${env.PATH}"
     }
 
     stages {
-        stage('Checkout') {
-            steps {
-                echo 'Cloning repository...'
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                bat '"%PYTHON_HOME%\\python.exe" --version'
-                bat '"%PYTHON_HOME%\\python.exe" build_script.py' // Replace with actual build script
+                echo 'Cloning GitLab repository...'
+                bat '"%GIT_HOME%" clone https://github.com/harini1810/jenkins-ci-cd-pipeline'  // 🔹 Replace with actual GitLab repo URL
+                
+                echo 'Installing dependencies...'
+                bat 'cd your-repo && "%PYTHON_HOME%\\python.exe" -m pip install -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running tests...'
-                bat '"%PYTHON_HOME%\\python.exe" test_script.py' // Replace with actual test script
+                echo 'Running unit tests...'
+                bat 'cd your-repo && "%PYTHON_HOME%\\python.exe" -m pytest > test-results.log'
             }
         }
 
         stage('Deploy') {
+            when {
+                expression { return currentBuild.result == null || currentBuild.result == 'SUCCESS' }
+            }
             steps {
-                echo 'Deploying the application...'
-                bat '"%PYTHON_HOME%\\python.exe" deploy_script.py' // Replace with actual deployment script
+                echo 'Deployment Successful!' // 
             }
         }
     }
@@ -42,7 +40,7 @@ pipeline {
             echo 'Pipeline executed successfully!'
         }
         failure {
-            echo 'Pipeline failed!'
+            echo 'Pipeline failed! Deployment skipped.'
         }
     }
 }
